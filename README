@@ -1,0 +1,9 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=2717
+
+I either wasn't happy with or unable to operate the mutt aliases scripts I found on this site, so I wrote my own.  It reads your aliases from g:mutt_aliases_file (global var), or from the file indicated in ~/.muttrc, or from ~/.aliases.
+
+It stores them in a complete function, which can be activated with either
+
+    i_CTRL-X-CTRL-U  (see :help i_CTRL-X-CTRL-U)
+
+or via an insert mode macro "@@".
