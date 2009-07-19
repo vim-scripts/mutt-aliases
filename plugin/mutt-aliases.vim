@@ -23,7 +23,7 @@
 fun! Read_Aliases()
     let lines = readfile(s:aliases_file)
     for line in lines
-        if line =~ "^[ ]*alias "
+        if line =~? "^[ ]*alias "
             let tokens  = split(line)
             let alias   = tokens[1]
             let address = join(tokens[2:])
@@ -50,13 +50,13 @@ fun! Complete_Emails(findstart, base)
         let res = []
 
         for alias in keys(s:address_dictionary)
-            if alias =~ '^' . a:base
+            if alias =~? '^' . a:base
                 call add(res, s:address_dictionary[alias])
             endif
         endfor
 
         for address in values(s:address_dictionary)
-            if address =~ a:base
+            if address =~? a:base
                 call add(res, address)
             endif
         endfor
@@ -72,8 +72,8 @@ let s:muttrc_file = expand("~/.muttrc")
 if filereadable(s:muttrc_file)
     let lines = readfile(s:muttrc_file)
     for l in lines
-        if l =~ "^[	 ]*set[	 ][	 ]*alias_file[	 ]*=" " strictly speaking, this is just the append point...
-            let ll = split(l, "=")                    " how would you detect a matching source .string location?
+        if l =~ '\s*set\s\+alias_file\s*='  " strictly speaking, this is just the append point...
+            let ll = split(l, "=")          " how would you detect a matching source .string location?
             let le = eval(ll[1])
 
             let s:aliases_file = le
