@@ -18,7 +18,6 @@
 " Repository: http://github.com/jettero/mutt-vim/
 " Issue Tracking: http://github.com/jettero/mutt-vim/issues
 "
-"
 
 fun! Read_Aliases()
     let lines = readfile(s:aliases_file)
@@ -38,7 +37,7 @@ fun! Complete_Emails(findstart, base)
         let line = getline('.')
         let start = col('.') - 1
 
-        while start > 0 && line[start - 1] =~ '\a'
+        while start > 0 && line[start - 1] =~ '\S'
             let start -= 1
         endwhile
 
@@ -56,10 +55,24 @@ fun! Complete_Emails(findstart, base)
         endfor
 
         for address in values(s:address_dictionary)
-            if address =~? a:base
+            if address =~? '\<' . a:base
                 call add(res, address)
             endif
         endfor
+
+        let canned = split(glob("~/.canned/*"), "\n")
+        if len(canned)
+            for file in canned
+                let ftok = split(file, "/")
+                let bnam = ftok[-1]
+
+                if bnam =~ '^' . a:base
+                    let text = join(readfile(file), "\n")
+
+                    call add(res, {'word': text, 'abbr': 'canned-response ' . bnam})
+                endif
+            endfor
+        endif
 
         return res
     endif
