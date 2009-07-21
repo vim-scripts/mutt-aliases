@@ -17,6 +17,7 @@
 " License: Public Domain
 " Repository: http://github.com/jettero/mutt-vim/
 " Issue Tracking: http://github.com/jettero/mutt-vim/issues
+" VERSION: 0.93
 "
 
 fun! Read_Aliases()
@@ -49,30 +50,14 @@ fun! Complete_Emails(findstart, base)
         let res = []
 
         for alias in keys(s:address_dictionary)
-            if alias =~? '^' . a:base
-                call add(res, s:address_dictionary[alias])
+            let address = s:address_dictionary[alias]
+
+            if alias =~? '^' . a:base    ||    address =~? '\<' . a:base
+
+                call add(res, {'word': address, 'menu': "[" . alias . "]"})
+
             endif
         endfor
-
-        for address in values(s:address_dictionary)
-            if address =~? '\<' . a:base
-                call add(res, address)
-            endif
-        endfor
-
-        let canned = split(glob("~/.canned/*"), "\n")
-        if len(canned)
-            for file in canned
-                let ftok = split(file, "/")
-                let bnam = ftok[-1]
-
-                if bnam =~ '^' . a:base
-                    let text = join(readfile(file), "\n")
-
-                    call add(res, {'word': text, 'abbr': 'canned-response ' . bnam})
-                endif
-            endfor
-        endif
 
         return res
     endif
